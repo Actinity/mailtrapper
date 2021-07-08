@@ -53,6 +53,8 @@ class MailtrapperController extends Controller
         <script>window.onload=function() {window.parent.postMessage({mailtrapperId:'.$id.',mailtrapperHeight:document.body.clientHeight},"*")};</script>
         ';
 
-        return str_replace('</body>',$snippet.'</body>',$message->body);
+        $content = str_replace('</body>',$snippet.'</body>',$message->body);
+
+        return response()->make($content,200,['X-Mailtrapper' => 'mailtrapper']);
     }
 }

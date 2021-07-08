@@ -34,22 +34,14 @@ class InjectMailtrapper
 				strpos($response->headers->get('Content-Type'), 'html') === false) ||
 			$request->getRequestFormat() !== 'html' ||
 			$response->getContent() === false ||
-			$this->isJsonRequest($request)
+			$this->isJsonRequest($request) ||
+			$response->headers->has('X-Mailtrapper')
 		) {
 			return $next($request);
 		}
 
 
 		$content = $response->getContent();
-
-
-
-		/*$head = '<link rel="stylesheet" href="/mailtrapper-ui/mailtrapper.css" />';
-
-		$pos = strripos($content, '</head>');
-		if (false !== $pos) {
-			$content = substr($content, 0, $pos) . $head . substr($content, $pos);
-		}*/
 
 		$pos = strripos($content, '</body>');
 		if (false !== $pos) {
