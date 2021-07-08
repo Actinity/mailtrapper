@@ -1,0 +1,23 @@
+{
+  "name": "actinity/mailtrapper",
+  "description": "Mailtrapper for Laravel",
+  "type": "library",
+
+  "autoload": {
+    "psr-4": {
+      "Actinity\\Mailtrapper\\": "src"
+    }
+  },
+
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Actinity\\Mailtrapper\\MailtrapperServiceProvider",
+        "Actinity\\Mailtrapper\\MailtrapperMailServiceProvider"
+      ]
+    }
+  },
+
+  "minimum-stability": "dev",
+  "prefer-stable": true
+}
