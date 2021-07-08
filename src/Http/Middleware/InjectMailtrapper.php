@@ -16,6 +16,10 @@ class InjectMailtrapper
 			return $next($request);
 		}
 
+		/**
+		 * Most of this is adapted from barryvdh/laravel-debugbar
+		 */
+
 		try {
 			/** @var \Illuminate\Http\Response $response */
 			$response = $next($request);
@@ -26,7 +30,19 @@ class InjectMailtrapper
 			$response = $this->handleException($request, $e);
 		}
 
+		if(($response->headers->has('Content-Type') &&
+				strpos($response->headers->get('Content-Type'), 'html') === false) ||
+			$request->getRequestFormat() !== 'html' ||
+			$response->getContent() === false ||
+			$this->isJsonRequest($request)
+		) {
+			return $next($request);
+		}
+
+
 		$content = $response->getContent();
+
+
 
 		/*$head = '<link rel="stylesheet" href="/mailtrapper-ui/mailtrapper.css" />';
 
@@ -38,10 +54,10 @@ class InjectMailtrapper
 		$pos = strripos($content, '</body>');
 		if (false !== $pos) {
 			$content = substr($content, 0, $pos) . '<div id="mailtrapper_widget"><mailtrapper></mailtrapper></div><script src="/mailtrapper-ui/mailtrapper.js"></script>' . substr($content, $pos);
-		}
 
-		$response->setContent($content);
-		$response->headers->remove('Content-Length');
+			$response->setContent($content);
+			$response->headers->remove('Content-Length');
+		}
 
 
 		return $response;
@@ -68,5 +84,21 @@ class InjectMailtrapper
 		$handler->report($e);
 
 		return $handler->render($passable, $e);
+	}
+
+	/**
+	 * @param  \Symfony\Component\HttpFoundation\Request $request
+	 * @return bool
+	 */
+	protected function isJsonRequest(\Symfony\Component\HttpFoundation\Request $request)
+	{
+		// If XmlHttpRequest or Live, return true
+		if ($request->isXmlHttpRequest() || $request->headers->get('X-Livewire')) {
+			return true;
+		}
+
+		// Check if the request wants Json
+		$acceptable = $request->getAcceptableContentTypes();
+		return (isset($acceptable[0]) && $acceptable[0] == 'application/json');
 	}
 }
