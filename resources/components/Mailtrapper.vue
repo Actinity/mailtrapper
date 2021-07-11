@@ -79,8 +79,9 @@ export default {
                     if(first.id > this.lastSeen && (first.created_at * 1000) > (new Date).getTime() - 30000) {
                         this.hasNew = true;
                     }
+                    let existingIds = this.messages.map((m) => m.id);
                     mails.forEach(m => {
-                        if(!_.find(this.messages,{id:m.id})) {
+                        if(!~existingIds.indexOf(m.id)) {
                             this.messages.unshift(m);
                         }
                     });
