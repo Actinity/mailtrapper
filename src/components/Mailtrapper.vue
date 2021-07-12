@@ -70,7 +70,7 @@ export default {
             this.isOpen = false;
         },
         ping() {
-            axios.get('/mailtrapper-ui/inbox')
+        	axios.get('/mailtrapper-ui/inbox')
             .then(r => {
                 this.hasNew = false;
                 if(r.data.length) {

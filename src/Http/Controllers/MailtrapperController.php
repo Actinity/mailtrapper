@@ -14,12 +14,6 @@ class MailtrapperController extends Controller
 		return response()->make($content,200,['Content-Type' => 'text/javascript']);
 	}
 
-	public function css()
-	{
-		$content = file_get_contents(__DIR__."/../../static/app.css");
-		return response()->make($content,200,['Content-Type' => 'text/css']);
-	}
-
     public function index()
     {
         if(config('mail.default') !== 'trapper') { abort(403); }

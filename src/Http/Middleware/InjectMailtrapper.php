@@ -12,7 +12,7 @@ class InjectMailtrapper
 {
 	public function handle(Request $request, Closure $next)
 	{
-		if(config('mail.default') !== 'trapper') {
+		if(config('mail.default') !== 'trapper' || !config('mail.inject_mailtrapper')) {
 			return $next($request);
 		}
 
