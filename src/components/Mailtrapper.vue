@@ -138,8 +138,8 @@ export default {
     right: 0;
     background: #fff;
     box-shadow: 0 0 10px rgba(0,0,0,0.15);
-    width: 500px;
-    max-width: 100%;
+    width: 600px;
+    max-width: 90%;
     top: 0;
     z-index: 99999;
 
