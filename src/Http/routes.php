@@ -12,5 +12,5 @@ Route::group([
 	Route::get('inbox','MailtrapperController@index');
 	Route::get('message/{id}','MailtrapperController@show');
 
-	Route::delete('/','MailTrapperController@deleteAll');
+	Route::delete('/','MailtrapperController@deleteAll');
 });
