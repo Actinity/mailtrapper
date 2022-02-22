@@ -2,25 +2,40 @@
 namespace Actinity\Mailtrapper;
 
 use Illuminate\Support\Facades\DB;
+use Symfony\Component\Mailer\Envelope;
+use Symfony\Component\Mailer\SentMessage;
+use Symfony\Component\Mailer\Transport\TransportInterface;
+use Symfony\Component\Mime\RawMessage;
 
 class Transport
-    extends \Illuminate\Mail\Transport\Transport
+    implements TransportInterface
 {
-    public function send(\Swift_Mime_SimpleMessage $message, &$failedRecipients = null)
+	public function send(RawMessage $message, Envelope $envelope = null): ?SentMessage
     {
-        $this->beforeSendPerformed($message);
+		$from = count($message->getFrom()) ? $message->getFrom()[0]->toString() : "Unspecified";
+		$to = [];
+		if(count($message->getTo())) {
+			foreach($message->getTo() as $address) {
+				$to[] = $address->getAddress();
+			}
+
+			$to = implode(',',$to);
+		}
 
         DB::table('mailtrapper')
             ->insert([
                 'subject' => $message->getSubject() ?: 'No subject',
-                'body' => $message->getBody(),
-                'to' => implode(",",array_keys($message->getTo())),
-                'from' => implode(",",$message->getFrom()),
+                'body' => $message->getHtmlBody(),
+                'to' => $to,
+                'from' => $from,
                 'created_at' => now(),
             ]);
 
-        $this->sendPerformed($message);
-
-        return $this->numberOfRecipients($message);
+		return new SentMessage($message, $envelope ?? Envelope::create($message));
     }
+
+	public function __toString(): string
+	{
+		return 'trapper';
+	}
 }
