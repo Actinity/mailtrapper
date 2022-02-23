@@ -25,7 +25,7 @@ class Transport
         DB::table('mailtrapper')
             ->insert([
                 'subject' => $message->getSubject() ?: 'No subject',
-                'body' => $message->getHtmlBody(),
+                'body' => $message->getHtmlBody() ?: $message->getTextBody(),
                 'to' => $to,
                 'from' => $from,
                 'created_at' => now(),
