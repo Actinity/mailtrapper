@@ -17,6 +17,10 @@ class MailtrapperServiceProvider
 
 		$kernel = $this->app[Kernel::class];
 		$kernel->pushMiddleware(InjectMailtrapper::class);
+
+		$this->publishes([
+			__DIR__.'/config.php' => config_path('mailtrapper.php'),
+		],'mailtrapper');
 	}
 
 }
