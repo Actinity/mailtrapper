@@ -1,4 +1,4 @@
 <?php
 return [
-	'middleware' => null,
+	'middleware' => \Actinity\Mailtrapper\MailtrapperServiceProvider::STANDARD_MIDDLEWARE,
 ];

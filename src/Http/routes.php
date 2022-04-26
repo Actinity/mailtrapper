@@ -3,7 +3,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::group([
 	'prefix' => 'mailtrapper-ui',
-	'middleware' => config('mailtrapper.middleware',['web',\Actinity\Mailtrapper\Http\Middleware\RequireAuth::class]),
+	'middleware' => config('mailtrapper.middleware',\Actinity\Mailtrapper\MailtrapperServiceProvider::STANDARD_MIDDLEWARE),
 	'namespace' => '\Actinity\Mailtrapper\Http\Controllers',
 ],function() {
 	Route::get('mailtrapper.js','MailtrapperController@js');
