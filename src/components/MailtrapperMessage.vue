@@ -6,7 +6,7 @@
 		>To: {{ message.to }}</div>
 		<div class="mailtrapper-subject">{{ message.subject }}</div>
 
-		<iframe class="mailtrapper-frame" v-if="isOpen" :scrolling="allowScrolling" :src="src" :height="frameHeight"></iframe>
+		<iframe class="mailtrapper-frame" v-if="isOpen" :src="src" :height="frameHeight"></iframe>
 
 	</div>
 </template>
@@ -20,8 +20,7 @@ export default {
 	data() {
 		return {
 			show: false,
-			frameHeight: 100,
-			allowScrolling: true
+			frameHeight: 100
 		}
 	},
 	mounted() {
@@ -32,7 +31,7 @@ export default {
 	},
 	methods: {
 		open() {
-			this.$emit('open');
+			this.$emit('open',this.$el);
 		},
 		close() {
 			this.$emit('close');
@@ -47,7 +46,7 @@ export default {
 		receiveMessage(message) {
 			if(message.data.mailtrapperId) {
 				if(message.data.mailtrapperId == this.message.id) {
-					this.frameHeight = message.data.mailtrapperHeight;
+					this.frameHeight = message.data.mailtrapperHeight+1;
 					this.allowScrolling = false;
 				}
 			}
@@ -78,6 +77,7 @@ export default {
 	font-size: 12px;
 	line-height: 1.4em;
 	cursor: pointer;
+	overflow: hidden;
 }
 .mailtrapper-date {
 	float: right;
@@ -86,6 +86,7 @@ export default {
 }
 .mailtrapper-selected {
 	background-color: #def;
+	padding-bottom: 0;
 }
 .mailtrapper-to {
 	cursor: help;
@@ -96,10 +97,12 @@ export default {
 	user-select: none;
 }
 .mailtrapper-frame {
+	display: block;
 	border: none;
 	margin-top: 10px;
 	margin-left: -10px;
 	margin-right: -10px;
 	width: calc(100% + 20px);
+	overflow: hidden;
 }
 </style>

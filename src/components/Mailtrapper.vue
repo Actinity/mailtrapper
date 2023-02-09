@@ -8,25 +8,26 @@
 
 			<div class="mailtrapper-wrapper" @click.self="close"></div>
 			<div class="mailtrapper-panel">
+				<div class="mailtrapper-messages" ref="messages">
+					<div v-if="!messages.length" class="mailtrapper-empty">
+						<p>No recent emails</p>
+						<p><a href="#" @click.prevent="close">Close</a></p>
+					</div>
+
+					<mailtrapper-message
+						v-else
+						v-for="message in messages"
+						:message="message"
+						:key="message.id"
+						:open-message="currentlyOpenMessage"
+						@open="openMessage(message, $event)"
+						@close="currentlyOpenMessage = null"
+					/>
+				</div>
 
 				<div class="mailtrapper-footer" @click="empty" v-if="canEmpty">
 					Empty
 				</div>
-
-				<div v-if="!messages.length" class="mailtrapper-empty">
-					<p>No recent emails</p>
-					<p><a href="#" @click.prevent="close">Close</a></p>
-				</div>
-
-				<mailtrapper-message
-					v-else
-					v-for="message in messages"
-					:message="message"
-					:key="message.id"
-					:open-message="openMessage"
-					@open="openMessage = message.id"
-					@close="openMessage = null"
-				/>
 			</div>
 		</template>
 
@@ -46,7 +47,7 @@ export default {
 			isOpen: false,
 			messages: [],
 			hasNew: false,
-			openMessage: null,
+			currentlyOpenMessage: null,
 			localLastSeen: 0,
 			canEmpty: false
 		}
@@ -63,6 +64,19 @@ export default {
 		}
 	},
 	methods: {
+		openMessage(message,element) {
+			let top = element.getBoundingClientRect().top;
+
+			this.currentlyOpenMessage = message.id;
+
+			this.$nextTick(() => {
+				this.$refs.messages.scrollTo({
+					left: 0,
+					top: element.offsetTop - top,
+					behaviour: 'auto'
+				});
+			});
+		},
 		empty() {
 			if(confirm('Are you sure you want to permanently delete all trapped emails?')) {
 				axios.delete('/mailtrapper-ui')
@@ -151,7 +165,6 @@ export default {
 .mailtrapper-panel {
 	position: fixed;
 	bottom: 0;
-	overflow-y: scroll;
 	right: 0;
 	background: #fff;
 	box-shadow: 0 0 10px rgba(0,0,0,0.15);
@@ -159,18 +172,21 @@ export default {
 	max-width: 90%;
 	top: 0;
 	z-index: 99999;
+	display: flex;
+	flex-direction: column;
 
 }
+.mailtrapper-messages {
+	flex: 1;
+	overflow-y: scroll;
+}
 .mailtrapper-footer {
-	position: absolute;
-	bottom: 0;
-	padding: 10px;
+	padding: 7px 10px;
 	background: #eee;
 	color: #999;
 	text-align: center;
-	left: 0;
-	right: 0;
 	cursor: pointer;
+	display: block;
 }
 .mailtrapper-footer:hover {
 	color: #000;
