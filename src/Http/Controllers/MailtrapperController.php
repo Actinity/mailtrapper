@@ -47,7 +47,11 @@ class MailtrapperController extends Controller
 		}
 
 		$snippet = '
-        <script>window.onload=function() {window.parent.postMessage({mailtrapperId:'.$id.',mailtrapperHeight:document.body.clientHeight},"*")};</script>
+        <script>window.onload=function() {
+			window.parent.postMessage({mailtrapperId:'.$id.',mailtrapperHeight:document.body.clientHeight},"*");
+			};
+			(function() { document.querySelectorAll("a").forEach(el => el.target="_blank"); })();
+			</script>
         ';
 
 		$content = str_replace('</body>',$snippet.'</body>',$message->body);
