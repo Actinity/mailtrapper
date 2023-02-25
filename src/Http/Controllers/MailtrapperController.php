@@ -38,6 +38,10 @@ class MailtrapperController extends Controller
 	{
 		if(config('mail.default') !== 'trapper') { abort(403); }
 
+		if(app()->bound('debugbar')) {
+			app('debugbar')->disable();
+		}
+
 		$message = DB::table('mailtrapper')
 			->where('id','=',$id)
 			->first();
@@ -47,10 +51,13 @@ class MailtrapperController extends Controller
 		}
 
 		$snippet = '
-        <script>window.onload=function() {
-			window.parent.postMessage({mailtrapperId:'.$id.',mailtrapperHeight:document.body.clientHeight},"*");
-			};
-			(function() { document.querySelectorAll("a").forEach(el => el.target="_blank"); })();
+        <script>
+			(function() {
+				document.querySelectorAll("a").forEach(el => el.target="_blank");
+				window.onload=function() {
+					window.parent.postMessage({mailtrapperId:'.$id.',mailtrapperHeight:document.body.clientHeight},"*");
+                };
+			})();
 			</script>
         ';
 
