@@ -83,6 +83,9 @@ export default {
 					.catch(e => {
 						alert('Unable to delete messages');
 						this.ping();
+					})
+					.then(e => {
+						this.ping();
 					});
 
 				this.messages = [];
