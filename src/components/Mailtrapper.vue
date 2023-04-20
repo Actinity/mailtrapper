@@ -35,7 +35,7 @@
 </template>
 <script>
 import axios from 'axios';
-import MailtrapperMessage from "./MailtrapperMessage";
+import MailtrapperMessage from "./MailtrapperMessage.vue";
 export default {
 	mounted() {
 		this.ping();
