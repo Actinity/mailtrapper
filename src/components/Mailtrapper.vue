@@ -103,6 +103,9 @@ export default {
 			this.isOpen = false;
 		},
 		ping() {
+			if(window.sessionStorage.getItem('mailtrapper-pause')) {
+				return;
+			}
 			axios.get('/mailtrapper-ui/inbox')
 				.then(r => {
 					this.hasNew = false;
