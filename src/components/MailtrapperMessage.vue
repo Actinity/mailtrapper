@@ -68,16 +68,16 @@ export default {
 	}
 }
 </script>
-<style lang="scss" scoped>
+<style scoped>
 .mailtrapper-message {
 	padding: 10px;
-	& + .mailtrapper-message {
-		border-top: 1px solid #ccc;
-	}
 	font-size: 12px;
 	line-height: 1.4em;
 	cursor: pointer;
 	overflow: hidden;
+}
+.mailtrapper-message + .mailtrapper-message {
+	border-top: 1px solid #ccc;
 }
 .mailtrapper-date {
 	float: right;
