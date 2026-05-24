@@ -11,7 +11,6 @@
 	</div>
 </template>
 <script>
-import {formatDistance} from 'date-fns';
 export default {
 	props: [
 		'message',
@@ -60,7 +59,7 @@ export default {
 			return 'From: '+ this.message.from;
 		},
 		date() {
-			return formatDistance(new Date(this.message.created_at *1000),new Date(),{addSuffix:true});
+			return this.message.created_at;
 		},
 		src() {
 			return '/mailtrapper-ui/message/' + this.message.id;

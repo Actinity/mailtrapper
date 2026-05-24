@@ -23,7 +23,7 @@ class MailtrapperController extends Controller
 			'messages' => DB::table('mailtrapper')
 				->select([
 					'id',
-					DB::raw('unix_timestamp(created_at) as created_at'),
+					'created_at',
 					'subject',
 					'from',
 					'to'

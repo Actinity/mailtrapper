@@ -36,7 +36,6 @@
 	</div>
 </template>
 <script>
-import axios from 'axios';
 import MailtrapperMessage from "./MailtrapperMessage.vue";
 export default {
 	mounted() {
@@ -81,16 +80,14 @@ export default {
 		},
 		empty() {
 			if(confirm('Are you sure you want to permanently delete all trapped emails?')) {
-				axios.delete('/mailtrapper-ui')
-					.catch(e => {
-						alert('Unable to delete messages');
-						this.ping();
-					})
-					.then(e => {
-						this.ping();
-					});
-
-				this.messages = [];
+				fetch('/mailtrapper-ui/empty',{
+					method: 'DELETE'
+				}).then(r => {
+					this.messages = [];
+				}).catch(e => {
+					alert('Unable to delete messages');
+					this.ping();
+				});
 			}
 		},
 		open() {
@@ -104,17 +101,19 @@ export default {
 			this.lastSeen = this.messages.length ? this.messages[0].id : 0;
 			this.isOpen = false;
 		},
-		ping() {
+		async ping() {
 			if(window.sessionStorage.getItem('mailtrapper-pause')) {
 				return;
 			}
-			axios.get('/mailtrapper-ui/inbox')
-				.then(r => {
+			fetch('/mailtrapper-ui/inbox')
+				.then(async r => {
+					const data = await r.json();
+
 					this.hasNew = false;
-					this.canEmpty = r.data.can_empty;
-					if(r.data.messages.length) {
-						let mails = r.data.messages.reverse();
-						let first = r.data.messages[mails.length - 1];
+					this.canEmpty = data.can_empty;
+					if(data.messages.length) {
+						let mails = data.messages.reverse();
+						let first = data.messages[mails.length - 1];
 						if(first.id > this.lastSeen && (first.created_at * 1000) > (new Date).getTime() - 30000) {
 							this.hasNew = true;
 						}
@@ -127,7 +126,7 @@ export default {
 					}
 				})
 				.catch(e => {
-					console.log(e,e.response);
+					console.log('Unable to ping mailtrapper',e);
 				});
 		}
 	},
