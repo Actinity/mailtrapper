@@ -31,6 +31,12 @@ class MailtrapperController extends Controller
 				->take(20)
 				->orderBy('created_at','desc')
 				->get()
+                ->map(function($message) {
+                    return [
+                        ...(array) $message,
+                        'created_at' => strtotime($message->created_at)*1000,
+                    ];
+                })
 		];
 	}
 

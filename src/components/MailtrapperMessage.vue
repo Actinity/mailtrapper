@@ -1,6 +1,6 @@
 <template>
 	<div class="mailtrapper-message" @click="toggle" :class="{'mailtrapper-selected':isOpen}">
-		<div class="mailtrapper-date" v-text="date"></div>
+		<div class="mailtrapper-date" v-text="dateDiff" :title="dateString"></div>
 		<div class="mailtrapper-to"
 		     :title="from"
 		>To: {{ message.to }}</div>
@@ -58,8 +58,36 @@ export default {
 		from() {
 			return 'From: '+ this.message.from;
 		},
-		date() {
-			return this.message.created_at;
+		dateString() {
+			return new Intl.DateTimeFormat('en',{
+				year: 'numeric',
+				month: 'long',
+				day: 'numeric',
+				hour: 'numeric',
+				minute: 'numeric',
+				second: 'numeric',
+			}).format(this.message.created_at);
+		},
+		dateDiff() {
+			const UNITS = [
+				['year',   365 * 24 * 60 * 60 * 1000],
+				['month',   30 * 24 * 60 * 60 * 1000],
+				['week',     7 * 24 * 60 * 60 * 1000],
+				['day',          24 * 60 * 60 * 1000],
+				['hour',              60 * 60 * 1000],
+				['minute',                 60 * 1000],
+				['second',                      1000],
+			];
+			const diff = this.message.created_at - new Date().getTime();
+			const rtf = new Intl.RelativeTimeFormat('en', { numeric: 'auto' });
+
+			for (const [unit, ms] of UNITS) {
+				if (Math.abs(diff) >= ms || unit === 'second') {
+					return rtf.format(Math.trunc(diff / ms), unit);
+				}
+			}
+
+			return this.formatter.format(this.message.created_at);
 		},
 		src() {
 			return '/mailtrapper-ui/message/' + this.message.id;

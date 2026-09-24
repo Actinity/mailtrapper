@@ -114,7 +114,7 @@ export default {
 					if(data.messages.length) {
 						let mails = data.messages.reverse();
 						let first = data.messages[mails.length - 1];
-						if(first.id > this.lastSeen && (first.created_at * 1000) > (new Date).getTime() - 30000) {
+						if(first.id > this.lastSeen && first.created_at > (new Date).getTime() - 30000) {
 							this.hasNew = true;
 						}
 						let existingIds = this.messages.map((m) => m.id);
